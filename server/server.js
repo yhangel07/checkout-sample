@@ -1,11 +1,12 @@
 import express from 'express';
 import 'babel-polyfill';
-import cors from 'cors';
 import env from './env.js';
 import compression from 'compression';
+import cors from 'cors';
 
 // routes
 import stripeRoute from './routes/stripeRoute';
+import notifRoute from './routes/notifRoute';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -27,13 +28,14 @@ const corsOption = {
 
 const app = express();
 app.use(compression());
-app.use(cors());
+app.use(cors(corsOption));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 app.enable('trust proxy');
 
-app.use("/api", cors(corsOption), stripeRoute);
+app.use("/api", stripeRoute);
+app.use("/notification", notifRoute);
 
 
 app.get('/',(req, res) => res.send('Welcome to my Sample App'));

@@ -19,8 +19,8 @@ const checkoutController = async (req, res) => {
           },
         ],
         mode: 'payment',
-        // success_url: 'http://localhost:3000/api/order/success?session_id={CHECKOUT_SESSION_ID}',
-        success_url: 'http://localhost:4200/product/success?session_id={CHECKOUT_SESSION_ID}',
+        success_url: 'http://localhost:3000/notification/order/success?session_id={CHECKOUT_SESSION_ID}',
+        // success_url: 'http://localhost:4200/product/success',
         cancel_url: 'http://localhost:3000/api/order/cancel'
       });
       return res.status(200).json({ id: session.id });
@@ -33,10 +33,16 @@ const checkoutController = async (req, res) => {
 
   const checkoutSuccess =  async (req, res) => {
     console.log(req.query);
-    const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
-    const customer = await stripe.customers.retrieve(session.customer);
+    try {
 
-    res.send(`<html><body><h1>Thanks for your order, ${customer.name}!</h1></body></html>`);
+      const session = await stripe.checkout.sessions.retrieve(req.query.session_id);
+      // const customer = await stripe.customers.retrieve(session.customer);
+      return res.status(200).json(session);
+
+    } catch(error) {
+      console.log(error);
+        return res.status(500).send('Operation was not successful', error);
+    }
   };
 
 

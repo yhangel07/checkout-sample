@@ -57,8 +57,7 @@ export class CheckoutComponent implements OnInit {
       .createToken(this.card.element, { name })
       .subscribe((result) => {
         if (result.token) {
-          // Use the token
-          console.log(result.token.id);
+          this.onSuccess();
         } else if (result.error) {
           // Error creating the token
           console.log(result.error.message);
@@ -66,4 +65,7 @@ export class CheckoutComponent implements OnInit {
       });
   }
 
+  onSuccess() {
+    this.bsModalRef.hide();
+  }
 }

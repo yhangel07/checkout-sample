@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { BsModalService, BsModalRef, ModalOptions } from 'ngx-bootstrap/modal';
 import { CheckoutComponent } from './checkout/checkout.component';
@@ -12,11 +13,13 @@ import { ProductService } from './product.service';
 export class ProductComponent implements OnInit {
   alertStatus: boolean = false;
 
+  onSuccess: boolean;
 
   bsModalRef?: BsModalRef;
   constructor(
     private modalService: BsModalService,
-    private productService: ProductService
+    private productService: ProductService,
+    private http: HttpClient
   ) {}
 
   item = rubberShoes;
@@ -33,6 +36,7 @@ export class ProductComponent implements OnInit {
     };
 
     this.bsModalRef = this.modalService.show(CheckoutComponent, initialState);
+    this.bsModalRef.onHide?.subscribe(() => this.onSuccess = true);
   }
 
   stripeCheckout() {
@@ -43,6 +47,15 @@ export class ProductComponent implements OnInit {
     };
 
     this.productService.checkoutProduct(item)
-      .pipe().subscribe(res => console.log(res));
+      .pipe().subscribe((res: any) => this.success(res.id));
+  }
+
+  success(id: string) {
+    this.http.get(`http://localhost:3000/notification/order/success?session_id=${id}`)
+      .pipe().subscribe(res => {
+        if(res) {
+          console.log(res);
+        }
+      });
   }
 }

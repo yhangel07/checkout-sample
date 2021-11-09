@@ -2,6 +2,9 @@
   <alert type="danger" dismissOnTimeout="3000" *ngIf="alertStatus" (onClosed)="alertStatus = false">
     <strong>Oppps!</strong> This is out of scope. Try Checkout button.
   </alert>
+  <alert type="success" [dismissOnTimeout]="5000" *ngIf="onSuccess" (onClosed)="onSuccess=false">
+    <strong>Well done!</strong> Payment Received!
+  </alert>
   <div class="row">
     <p class="text-muted">
       1 Item in your cart
@@ -72,7 +75,7 @@
       </table>
       <div class="row">
         <button type="button" class="btn btn-secondary my-1" (click)="alertStatus = true">Continue Shopping</button>
-        <button type="button" class="btn btn-danger my-1" (click)="stripeCheckout()">Checkout</button>
+        <button type="button" class="btn btn-danger my-1" (click)="checkoutModal()">Checkout</button>
       </div>
     </div>
   </div>
